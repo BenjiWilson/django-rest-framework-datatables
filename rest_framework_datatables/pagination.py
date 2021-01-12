@@ -30,15 +30,19 @@ class DatatablesMixin(object):
 
     def get_count_and_total_count(self, queryset, view):
         if hasattr(view, '_datatables_filtered_count'):
-            count = view._datatables_filtered_count
+            # count = view._datatables_filtered_count
+            count = 1000000000
             del view._datatables_filtered_count
         else:  # pragma: no cover
-            count = queryset.count()
+            # count = queryset.count()
+            count = 1000000000
         if hasattr(view, '_datatables_total_count'):
-            total_count = view._datatables_total_count
+            # total_count = view._datatables_total_count
+            total_count =  1000000000
             del view._datatables_total_count
         else:  # pragma: no cover
-            total_count = count
+            # total_count = count
+            total_count = 1000000000
         return count, total_count
 
 
@@ -88,28 +92,6 @@ class DatatablesPageNumberPagination(DatatablesMixin, PageNumberPagination):
 
 
 class DatatablesLimitOffsetPagination(DatatablesMixin, LimitOffsetPagination):
-    def get_limit(self, request):
-        try:
-            limit_value = int(get_param(request, self.limit_query_param))
-            if limit_value <= 0:
-                raise ValueError
-
-            if self.max_limit is not None:
-                return min(limit_value, self.max_limit)
-            return limit_value
-        except ValueError:
-            return self.default_limit
-
-    def get_offset(self, request):
-        try:
-            offset_value = int(get_param(request, self.offset_query_param))
-            if offset_value < 0:
-                raise ValueError
-
-            return offset_value
-        except ValueError:
-            return 0
-
     def paginate_queryset(self, queryset, request, view=None):
         if request.accepted_renderer.format == 'datatables':
             self.is_datatable_request = True
